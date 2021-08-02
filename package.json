@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/jon-choi/tinyapp#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "ejs": "^3.1.6",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
   }
 }

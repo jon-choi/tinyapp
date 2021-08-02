@@ -1,9 +1,12 @@
 const { request } = require('express');
 const express = require('express');
+const bodyParser = require("body-parser");
+const morgan = require('morgan');
 const app = express();
 const PORT = 8080;
 
 app.set('view engine', 'ejs');
+app.use(express.urlencoded({extended: true}));
 
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
@@ -12,6 +15,10 @@ const urlDatabase = {
 
 app.get('/', (req, res) => {
   res.send('Hello!')
+});
+
+app.get('/urls/new', (req, res) => {
+  res.render('urls_new');
 });
 
 app.get('/urls', (req, res) => {
@@ -24,9 +31,9 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 })
 
-app.get('urls.json', (req, res) => {
-  res.json(urlDatabase);
-});
+// app.get('urls.json', (req, res) => {
+//   res.json(urlDatabase);
+// });
 
 app.get('/hello', (req, res) => {
   res.send('<html><body>Hello <b>World</b></body></html>\n');
