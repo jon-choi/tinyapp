@@ -2,10 +2,12 @@ const express = require('express');
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
+const morgan = require('morgan');
 
 app.use(express.urlencoded({extended: true})); // changed to express bc body parser is deprecated
 
 app.set('view engine', 'ejs');
+app.use(morgan('dev'));
 
 function generateRandomString() {
   return Math.round(Math.pow(36, 5 + 1) - Math.random() * Math.pow(36, 5)).toString(36).slice(1);
@@ -38,6 +40,12 @@ app.post('/urls', (req, res) => {
   console.log('New urlDatabase: ', urlDatabase); // saved to urlDatabase and redirects to shortURL
   res.redirect(`urls/${shortURL}`); // respond with 'ok'
 });
+
+app.post('/urls/:shortURL/delete', (req, res) => {
+  let shortURL = req.params.shortURL;
+  delete urlDatabase[shortURL];
+  res.redirect('/urls');
+})
 
 app.get('/urls/:shortURL', (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
