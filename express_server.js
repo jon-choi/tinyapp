@@ -14,7 +14,8 @@ function generateRandomString() {
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
   '9sm5xK': 'http://www.google.com',
-  'ud6ds': 'http://www.soundcloud.com'
+  'ud6ds': 'http://www.soundcloud.com',
+  'hetc4': 'http://www.basscoast.ca'
 };
 
 app.get('/', (req, res) => {
