@@ -3,7 +3,7 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.urlencoded({extended: true})); // changed to express bc body parser is deprecated
 
 app.set('view engine', 'ejs');
 
@@ -32,9 +32,10 @@ app.get('/urls', (req, res) => {
 
 app.post('/urls', (req, res) => {
   console.log(req.body);  // log the POST request body to the console
-  urlDatabase[generateRandomString()] = req.body.longURL;
+  const shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
   console.log('New urlDatabase: ', urlDatabase); // saved to urlDatabase and redirects to shortURL
-  res.redirect(`urls/${urlDatabase}`); // respond with 'ok'
+  res.redirect(`urls/${shortURL}`); // respond with 'ok'
 });
 
 app.get('/urls/:shortURL', (req, res) => {
@@ -44,6 +45,9 @@ app.get('/urls/:shortURL', (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
+  if (!urlDatabase[req.params.shortURL]) {
+    return res.status(404).send('Error. Page not found.');
+  }
   res.redirect(longURL);
 });
 
