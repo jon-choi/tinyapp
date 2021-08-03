@@ -41,6 +41,7 @@ app.post('/urls', (req, res) => {
   res.redirect(`urls/${shortURL}`); // respond with 'ok'
 });
 
+// allows user to delete url
 app.post('/urls/:shortURL/delete', (req, res) => {
   let shortURL = req.params.shortURL;
   delete urlDatabase[shortURL];
@@ -52,6 +53,15 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
+// updates url resource
+app.post('/urls/:shortURL', (req, res) => {
+  const shortURL = req.params.shortURL;
+  const newURL = req.body[longURL];
+  urlDatabase[shortURL] = newURL;
+  res.redirect('/urls');
+})
+
+// redirects from short url to long url 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   if (!urlDatabase[req.params.shortURL]) {
