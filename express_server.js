@@ -8,9 +8,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
 
 function generateRandomString() {
-  return Math.round(Math.pow(36, 5 + 1) - Math.random() * Math.pow(36, 5))
-  .toString(36)
-  .slice(1);
+  return Math.round(Math.pow(36, 5 + 1) - Math.random() * Math.pow(36, 5)).toString(36).slice(1);
 }
 
 const urlDatabase = {
@@ -35,7 +33,7 @@ app.get('/urls', (req, res) => {
 app.post('/urls', (req, res) => {
   console.log(req.body);  // log the POST request body to the console
   urlDatabase[generateRandomString()] = req.body.longURL;
-  console.log('New urlDatabase: ', urlDatabase);
+  console.log('New urlDatabase: ', urlDatabase); // saved to urlDatabase and redirects to shortURL
   res.redirect(`urls/${urlDatabase}`); // respond with 'ok'
 });
 
@@ -49,9 +47,11 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+// urlDatabase as a JSON file
 // app.get('urls.json', (req, res) => {
 //   res.json(urlDatabase);
 // });
+
 
 // app.get('/hello', (req, res) => {
 //   res.send('<html><body>Hello <b>World</b></body></html>\n');
