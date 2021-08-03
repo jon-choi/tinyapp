@@ -56,7 +56,7 @@ app.get('/urls/:shortURL', (req, res) => {
 // updates url resource
 app.post('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  const newURL = req.body[longURL];
+  const newURL = req.body.longURL;
   urlDatabase[shortURL] = newURL;
   res.redirect('/urls');
 })
