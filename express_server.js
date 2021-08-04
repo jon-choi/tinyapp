@@ -3,8 +3,10 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 
 app.use(express.urlencoded({extended: true})); // changed to express bc body parser is deprecated
+app.use(cookieParser());
 
 app.set('view engine', 'ejs');
 app.use(morgan('dev'));
@@ -28,9 +30,23 @@ app.get('/urls/new', (req, res) => {
   res.render('urls_new');
 });
 
-app.get('/urls', (req, res) => {
-  const templateVars = { urls: urlDatabase };
-  res.render('urls_index', templateVars);
+app.get("/urls", (req, res) => {
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  res.render("urls_index", templateVars);
+});
+
+// login endpoint
+app.post('/login', (req, res) => {
+  const loginUsername = req.body.username;
+  res.cookie('username', loginUsername);
+  res.redirect('/urls');
+});
+
+// log out endpoint
+app.post('/logout', (req, res) => {
+  const loginUsername = req.body.username;
+  res.clearCookie('username', loginUsername);
+  res.redirect('/urls')
 });
 
 app.post('/urls', (req, res) => {
@@ -48,9 +64,13 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   res.redirect('/urls');
 })
 
-app.get('/urls/:shortURL', (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
-  res.render('urls_show', templateVars);
+app.get("/urls/:shortURL", (req, res) => {
+  const templateVars = {
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL],
+    username: req.cookies["username"],
+  };
+  res.render("urls_show", templateVars);
 });
 
 // updates url resource
