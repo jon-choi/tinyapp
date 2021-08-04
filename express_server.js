@@ -38,6 +38,11 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+// registration route handler
+app.get('/register', (req, res) => {
+  res.render('urls_register');
+});
+
 // login endpoint
 app.post('/login', (req, res) => {
   const loginUsername = req.body.username;
