@@ -1,3 +1,4 @@
+
 const express = require('express');
 const app = express();
 const PORT = 8080;
@@ -17,27 +18,35 @@ function generateRandomString() {
 }
 
 const urlDatabase = {
-  'b2xVn2': 'http://www.lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com',
-  'ud6ds': 'http://www.soundcloud.com',
-  'hetc4': 'http://www.basscoast.ca'
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW"
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW"
+  },
+  ixikp: {
+    longURL: "https://www.basscoast.ca",
+    userID: "aJ98lE"
+  }
 };
 
 const users = {
-  userRandomID: {
+  "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur",
+    password: "purple-monkey-dinosaur"
   },
-  userRandomID: {
+  "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk",
+    password: "dishwasher-funk"
   },
-  userRandomID: {
+  "user3RandomID": {
     id: "DeltonID",
     email: "delton@gmail.com",
-    password: 'ginger'
+    password: "ginger"
   }
 };
 
@@ -46,12 +55,17 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const userObj = users[req.cookies.user_id];
-  const templateVars = {
-    urls: urlDatabase,
-    user: userObj
-  };
-  res.render("urls_new", templateVars);
+  const userID = req.cookies.user_id;
+  const userObj = users[userID];
+
+  if (!userID) {
+    res.redirect('/login');
+  }else {
+    let templateVars = {
+      user: userObj
+    };
+    res.render("urls_new", templateVars);
+  }
 });
 
 app.get("/urls", (req, res) => {
@@ -75,7 +89,7 @@ app.get('/register', (req, res) => {
 
 // registering a new user
 app.post("/register", (req, res) => {
-  const userID = generateRandomString(6);
+  const userID = generateRandomString();
   const userEmail = req.body.email;
   const userPwd = req.body.password;
 
@@ -126,19 +140,37 @@ app.post('/logout', (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
-  console.log(req.body);  // log the POST request body to the console
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
-  console.log('New urlDatabase: ', urlDatabase); // saved to urlDatabase and redirects to shortURL
-  res.redirect(`urls/${shortURL}`); // respond with 'ok'
+  if (req.cookies.user_id) {
+    if (!req.body.longURL) {
+      res.redirect('/urls/new');
+    }
+    const shortURL = generateRandomString();
+    const longURL = req.body.longURL;
+    const userId = req.cookies.user_id;
+
+    urlDatabase[shortURL] = {
+      longURL: longURL,
+      userID: userId
+    };
+    res.redirect('/urls');
+  } else {
+    res.status(403).redirect('/login');
+  }
 });
 
 // allows user to delete url
 app.post('/urls/:shortURL/delete', (req, res) => {
   let shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL];
-  res.redirect('/urls');
-})
+  const creator = urlDatabase[shortURL].userID;
+  const user = req.cookies.user_id;
+
+  if (user === creator) {
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
+  } else {
+    res.send("You're not allowed here. Get out!");
+  }
+});
 
 app.get("/urls/:shortURL", (req, res) => {
   const userObj = users[req.cookies.user_id]
@@ -153,20 +185,33 @@ app.get("/urls/:shortURL", (req, res) => {
 
 // updates url resource
 app.post('/urls/:shortURL', (req, res) => {
-  const shortURL = req.params.shortURL;
-  const newURL = req.body.longURL;
-  urlDatabase[shortURL] = newURL;
-  res.redirect('/urls');
-})
+  if (req.cookies.user_id) {
+    const shortURL = req.params.shortURL;
+    const longURL = req.body.longURL;
+
+    if (urlDatabase[shortURL].userID === req.cookies.user_id) {
+      urlDatabase[shortURL].longURL = longURL;
+      res.redirect('/urls');
+    } else {
+      res.send("You are not allowed here!");
+    }
+  } else {
+    res.redirect('/login');
+  }
+});
 
 // redirects from short url to long url 
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const url = urlDatabase[req.params.shortURL];
+
   if (!urlDatabase[req.params.shortURL]) {
-    return res.status(404).send('Error. Page not found.');
+    res.send("URL does not exist.");
   }
-  res.redirect(longURL);
+  res.redirect(url.longURL)
 });
+
+// TODO if the user is logged in but does not own the URL with the given id, return HTML with relevant message
+// TODO rework url function
 
 // urlDatabase as a JSON file
 // app.get('urls.json', (req, res) => {

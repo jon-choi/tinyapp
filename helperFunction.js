@@ -21,9 +21,20 @@ function getEmail(email, database) {
   return null;
 }
 
+function urlsForUser(userId) {
+  const urls = {};
+  for (const url in urlDatabase) {
+    if (urlDatabase[url].userID === userId) {
+      urls[url] = urlDatabase[url];
+    }
+  }
+  return urls;
+}
+
 module.exports = {
   isEmail,
   generateRandomString,
-  getEmail
+  getEmail,
+  urlsForUser
 };
 
