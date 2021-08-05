@@ -9,7 +9,9 @@ function isEmail(newEmail, users) {
 }
 
 function generateRandomString() {
-  return Math.round(Math.pow(36, 5 + 1) - Math.random() * Math.pow(36, 5)).toString(36).slice(1);
+  return Math.round(Math.pow(36, 5 + 1) - Math.random() * Math.pow(36, 5))
+    .toString(36)
+    .slice(1);
 }
 
 function getUserByEmail(email, database) {
@@ -35,6 +37,5 @@ module.exports = {
   isEmail,
   generateRandomString,
   getUserByEmail,
-  urlsForUser
+  urlsForUser,
 };
-
