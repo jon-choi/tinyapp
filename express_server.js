@@ -4,6 +4,7 @@ const PORT = 8080;
 const bodyParser = require("body-parser");
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const helperFunction = require('./helperFunction');
 
 app.use(express.urlencoded({extended: true})); // changed to express bc body parser is deprecated
 app.use(cookieParser());
@@ -28,11 +29,16 @@ const users = {
     email: "user@example.com",
     password: "purple-monkey-dinosaur",
   },
-  user2RandomID: {
+  userRandomID: {
     id: "user2RandomID",
     email: "user2@example.com",
     password: "dishwasher-funk",
   },
+  userRandomID: {
+    id: "DeltonID",
+    email: "delton@gmail.com",
+    password: 'ginger'
+  }
 };
 
 app.get("/", (req, res) => {
@@ -69,14 +75,15 @@ app.get('/register', (req, res) => {
 
 // registering a new user
 app.post("/register", (req, res) => {
-  const userID = generateRandomString();
+  const userID = generateRandomString(6);
   const userEmail = req.body.email;
   const userPwd = req.body.password;
 
-  if (userEmail === "" || userPwd === "") {
-    res.status(400).send("Please enter a valid email and/or password");
-  } else if (users.email === users.email) {
-    res.status(400).send("This email is already registered.");
+  if (!userEmail || !userPwd) {
+    res.status(400).send("Error 400: Please enter a valid email and/or password");
+  } else if (helperFunction.isEmail(userEmail, users)) {
+    res.status(400).send("Error 400: This email is already registered.");
+    return res.redirect('/register');
   } else {
     users[userID] = {
       id: userID,
@@ -99,11 +106,17 @@ app.get('/login', (req, res) => {
 
 // login endpoint
 app.post("/login", (req, res) => {
-  if (users.email === req.body.email && users.password === req.body.password) {
-    res.cookie('user_id', users.id);
-    res.redirect('/urls');
+  const userEmail = req.body.email;
+  const userPwd = req.body.password;
+  const userID = helperFunction.getEmail(userEmail, users);
+
+  if(!userID) {
+    res.status(403).send('Error 403: Sorry, the email you entered is invalid. Please try again.');
+  } else if (userPwd !== users[userID].password) {
+    res.status(403).send('Error 403: Sorry, the password you entered is invalid. Please try again.')
   }
-  res.status(403).send('The email and/or password you entered is not correct or cannot be found. Please try again.');
+  res.cookie('user_id', userID);
+  res.redirect('/urls');
 });
 
 // log out endpoint
