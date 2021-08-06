@@ -47,7 +47,8 @@
         </table>
 
         <% } else { %>
-          <div>Oops! You have to be logged in or registered to use this app. </div>
+          <div class="alert alert-warning" role="alert">
+            Please <a href="/login" class="alert-link">login</a> or <a href="/register" class="alert-link">register</a> to see your URLS.</div>
           <% } %>
     </main>
     <!-- Bootstrap JS -->

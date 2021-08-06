@@ -23,11 +23,11 @@ function getUserByEmail(email, database) {
   return null;
 }
 
-function urlsForUser(user) {
+function urlsForUser(id, urlDatabase) {
   const urls = {};
-  for (const url in urlDatabase) {
-    if (urlDatabase[url].userID === user.id) {
-      urls[url] = urlDatabase[url];
+  for (const shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === id) {
+      urls[shortURL] = urlDatabase[shortURL];
     }
   }
   return urls;

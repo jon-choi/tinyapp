@@ -229,34 +229,29 @@ app.post("/urls", (req, res) => {
 
 // allows user to delete url
 app.post("/urls/:shortURL/delete", (req, res) => {
-  if (req.session.user_id) {
-    let shortURL = req.params.shortURL;
+  const userID = req.session.user_id;
+  const checkUrl = helpers.urlsForUser(userID, urlDatabase);
 
-    if (urlDatabase[shortURL].userID === req.session.user_id) {
-      delete urlDatabase[shortURL];
-      res.redirect("/urls");
-    } else {
-      res.send("Sorry. That's not allowed.");
-    }
+  if (Object.keys(checkUrl).includes(req.param.shortURL)) {
+    const shortURL = req.params.shortURL;
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
   } else {
-    res.send("You must be logged in to delete this.");
+    res.send("Sorry, you're not allowed to delete this.")
   }
 });
 
 // updates url resource
-app.post("/urls/:shortURL", (req, res) => {
-  if (req.session.user_id) {
-    const shortURL = req.params.shortURL;
-    const longURL = req.body.longURL;
+app.post("/urls/:id", (req, res) => {
+  const userID = req.session.user_id;
+  const checkUrl = helpers.urlsForUser(userID, urlDatabase);
 
-    if (urlDatabase[shortURL].userID === req.session.user_id) {
-      urlDatabase[shortURL].longURL = longURL;
-      res.redirect("/urls");
-    } else {
-      res.send("You are not allowed here!");
-    }
+  if (Object.keys(checkUrl).includes(req.params.id)) {
+    const shortURL = req.params.id;
+    urlDatabase[shortURL].longURL = req.body.newUrl;
+    res.redirect('/urls');
   } else {
-    res.redirect("/login");
+    res.send("You're not allowed to edit this url.")
   }
 });
 
