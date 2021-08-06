@@ -186,7 +186,7 @@ app.post("/login", (req, res) => {
     res
       .status(403)
       .send(
-        "Error 403: Sorry, the email and/or you entered is invalid. Please try again."
+        "Error 403: Sorry, the email and/or password you entered is invalid. Please try again."
       );
   }
   if (user) {
@@ -196,7 +196,7 @@ app.post("/login", (req, res) => {
     res
       .status(403)
       .send(
-        "Error 403: Sorry, the email and/ or password you entered is invalid. Please try again."
+        "Error 403: Sorry, the email and/or password you entered is invalid. Please try again."
       );
   }
 });
@@ -257,15 +257,6 @@ app.post("/urls/:shortURL", (req, res) => {
     }
   } else {
     res.redirect("/login");
-  }
-});
-
-// redirects from short url to long url
-app.get("/u/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
-
-  if (!urlDatabase[shortURL]) {
-    res.send("We can't find the URL you're searching for.");
   }
 });
 
