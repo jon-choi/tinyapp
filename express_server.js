@@ -105,12 +105,11 @@ app.get("/urls/new", (req, res) => {
 
 // route to urls page
 app.get("/urls", (req, res) => {
-  const userObj = users[req.session.user_id];
-  const templateVars = {
-    urls: urlDatabase,
-    user: userObj,
-  };
-  res.render("urls_index", templateVars);
+  let templateVars = {
+    urls: urlsForUser(req.session.user_id, urlDatabase),
+    user: users[req.session.user_id],
+  }
+  res.render('urls_index', templateVars)
 });
 
 // registration route handler
