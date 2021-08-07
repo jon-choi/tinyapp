@@ -24,31 +24,6 @@ app.set("trust proxy", 1);
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
 
-///--------> DATA <--------///
-// const urlDatabase = {
-//   ymlkw: {
-//     longURL: "https://www.tsn.ca",
-//     userID: "aJ48lW",
-//   },
-//   i3BoGr: {
-//     longURL: "https://www.google.ca",
-//     userID: "aJ48lW",
-//   },
-// };
-
-// const users = {
-//   userRandomID: {
-//     id: "userRandomID",
-//     email: "user@example.com",
-//     password: "purple-monkey-dinosaur",
-//   },
-//   userRandomID: {
-//     id: "user2RandomID",
-//     email: "user2@example.com",
-//     password: "dishwasher-funk",
-//   },
-// };
-
 ///--------> SERVER DATABASES <--------///
 const urlDatabase = {};
 
