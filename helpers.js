@@ -1,6 +1,6 @@
-function isEmail(newEmail, users) {
+function isEmailExist(email, users) {
   for (const user in users) {
-    if (users[user].email === newEmail) {
+    if (users[user].email === email) {
       return true;
     } else {
       return false;
@@ -33,9 +33,18 @@ function urlsForUser(id, urlDatabase) {
   return urls;
 }
 
+const cookieHasUser = function(cookie, userDatabase) {
+  for (const user in userDatabase) {
+    if (cookie === user) {
+      return true;
+    }
+  } return false;
+};
+
 module.exports = {
-  isEmail,
+  isEmailExist,
   generateRandomString,
   getUserByEmail,
   urlsForUser,
+  cookieHasUser
 };
