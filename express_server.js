@@ -174,7 +174,7 @@ app.post("/logout", (req, res) => {
 });
 
 // route to redirect to urls page
-app.post("/urls/", (req, res) => {
+app.post("/urls", (req, res) => {
   if (req.session.user_id) {
     const shortURL = generateRandomString();
     urlDatabase[shortURL] = {
