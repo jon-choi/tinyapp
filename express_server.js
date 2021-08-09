@@ -8,9 +8,6 @@ const cookieSession = require("cookie-session");
 const { generateRandomString, isEmailExist, getUserByEmail, urlsForUser, cookieHasUser } = require('./helpers');
 const e = require("express");
 
-///--------> HELPER FUNCTION <--------///
-
-
 ///--------> MIDDLEWARE <--------///
 app.use(express.urlencoded({ extended: true })); // changed to express bc body parser is deprecated
 app.use(
